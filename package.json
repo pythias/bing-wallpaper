@@ -1,0 +1,49 @@
+{
+  "name": "bing-wallpaper",
+  "version": "1.0.0",
+  "description": "Automatically Set Bing's Daily Photo as Your Mac/Windows Wallpaper.",
+  "main": "./main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --debug",
+    "win": "electron-builder --win --x64",
+    "mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=out --icon=build/icon.icns"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pythias/bing-wallpaper.git"
+  },
+  "keywords": [
+    "Bing",
+    "Wallpaper"
+  ],
+  "build": {
+    "appId": "com.duo.bing-wallpaper",
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    }
+  },
+  "author": "pythias@gmail.com",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/pythias/bing-wallpaper/issues"
+  },
+  "homepage": "https://github.com/pythias/bing-wallpaper#readme",
+  "devDependencies": {
+    "electron": "^11.3.0"
+  },
+  "dependencies": {
+    "auto-launch": "^5.0.5",
+    "electron-settings": "^4.0.2",
+    "sqlite3": "^5.0.2"
+  }
+}
