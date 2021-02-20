@@ -3,12 +3,16 @@ const info = require('./package.json');
 const BingTray = require('./src/tray');
 const BingWallpaper = require('./src/wallpaper');
 const BingStorage = require('./src/storage');
+const { isMac } = require('./src/utils');
 
 let wallpaper = null;
 let tray = null;
 let storage = null;
 
-app.dock.hide()
+if (isMac()) {
+    app.dock.hide();
+}
+
 app.on('ready', () => {
     // console.log(screen.getAllDisplays());
     tray = new BingTray(app);
