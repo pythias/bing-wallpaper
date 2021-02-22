@@ -1,4 +1,4 @@
-const { app, ipcMain, BrowserWindow } = require('electron');
+const { app, ipcMain, BrowserWindow, screen } = require('electron');
 const info = require('./package.json');
 const Bing = require('./src/bing');
 const BingTray = require('./src/tray');
@@ -18,6 +18,8 @@ if (isMac()) {
 }
 
 app.on('ready', () => {
+    console.log(screen.getAllDisplays());
+
     downloadWindow = new BrowserWindow({ width: 1, height: 1 });
     downloadWindow.hide();
 
