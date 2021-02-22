@@ -5,14 +5,10 @@ const settings = require('electron-settings');
 const BingLaunch = require('./launch');
 
 class BingTray {
-    constructor(app) {
-        this.app = app;
-
+    init() {
         let icon = path.join(path.dirname(__dirname), './assets/img/wallpaper-tray.png');
         this.tray = new Tray(icon);
-    }
 
-    init() {
         const menu_latest = settings.getSync("menu.latest");
         const menu_detail = settings.getSync("menu.detail");
         const menu_auto = settings.getSync("menu.auto");
