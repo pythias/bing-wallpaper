@@ -4,9 +4,11 @@ const Bing = require('./src/bing');
 const BingTray = require('./src/tray');
 const BingStorage = require('./src/storage');
 const Wallpaper = require('./src/wallpaper');
+const BingLaunch = require('./src/launch');
 const { isMac } = require('./src/utils');
 const log = require('electron-log');
-const {download} = require('electron-dl');
+const { download } = require('electron-dl');
+const { getWallpaper, setWallpaper } = require('./src/shell');
 
 let bing = new Bing();
 let tray = new BingTray();
@@ -18,17 +20,44 @@ if (isMac()) {
 }
 
 app.on('ready', () => {
-    console.log(screen.getAllDisplays());
-
-    downloadWindow = new BrowserWindow({ width: 1, height: 1 });
+    downloadWindow = new BrowserWindow({
+        width: 1, 
+        height: 1, 
+        webPreferences: {
+            contextIsolation: true
+        } 
+    });
     downloadWindow.hide();
 
     tray.init();
+    tray.on("menu-latest-checked", (checked) => {
+        const screens = screen.getAllDisplays();
+        if (checked) {
+            storage.latest(screens.length, (rows) => {
+                setScreensWallpaper(screens, rows);
+            });
+        } else {
+            storage.random(screens.length, (rows) => {
+                setScreensWallpaper(screens, rows);
+            });
+        }
+    });
+    tray.on("menu-detail-checked", (checked) => {
+
+    });
+    tray.on("menu-auto-checked", (checked) => {
+        const autoLauncher = new BingLaunch();
+        if (checked) {
+            autoLauncher.enable();
+        } else {
+            autoLauncher.disable();
+        }
+    });
 
     storage.init();
 
     bing.fetch(0);
-    bing.on("fetch-completed", fetch_completed);
+    bing.on("fetch-completed", fetchCompleted);
     bing.on("fetch-stopped", function (error) {
         log.error("stopped, %s", error);
     });
@@ -38,15 +67,43 @@ app.on('ready', () => {
     }, 3600);
 });
 
-async function fetch_completed(result) {
-    log.debug("got image %s at page %d", result.image.url, result.idx);
+function setScreenWallpaper(screenId, imagePath) {
+    setWallpaper(screenId, imagePath).then((result) => {
+        if (result.hasOwnProperty("error")) {
+            log.error("wallpaper set fail, error: %s", result.error);
+        } else {
+            log.info("wallpaper set, id:%d, path:%s", result.id, result.path);
+        }
+    }).catch(err => {
+        log.error("wallpaper set failed, error:%s", err);
+    });
+}
 
-    const browserWindow = BrowserWindow.getFocusedWindow();
+function setScreensWallpaper(screens, rows) {
+    screens.forEach(screen => {
+        const row = rows.pop();
+        const wallpaper = new Wallpaper();
+        wallpaper.parseRow(row);
+        if (!wallpaper.exists()) {
+            download(downloadWindow, wallpaper.getUrl(), { directory: wallpaper.getDirectory(), filename: wallpaper.getFileName() }).then(dl => {
+                setScreenWallpaper(screen.id, wallpaper.getFilePath());
+                return dl;
+            }).catch(err => {
+                log.error(err);
+                return err;
+            });
+        } else {
+            setScreenWallpaper(screen.id, wallpaper.getFilePath());
+        }
+    });
+}
+
+async function fetchCompleted(result) {
     const wallpaper = new Wallpaper();
     wallpaper.parse(result.image);
     
     if (!wallpaper.exists()) {
-        download(browserWindow, wallpaper.getUrl(), {directory: wallpaper.getDiretory(), filename: wallpaper.getFileName()}).then(dl => {
+        download(downloadWindow, wallpaper.getUrl(), { directory: wallpaper.getDirectory(), filename: wallpaper.getFileName()}).then(dl => {
             log.debug("save %s to %s", dl.getURL(), dl.getSavePath());
             return dl;
         }).catch(err => {

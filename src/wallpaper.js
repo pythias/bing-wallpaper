@@ -30,11 +30,26 @@ class Wallpaper extends EventEmitter {
         this.info = image.copyright;
     }
 
+    parseRow(row) {
+        this.date = row.date;
+        this.name = row.name;
+        this.area = row.area;
+        this.bingId = row.bind_id;
+        this.width = row.width;
+        this.height = row.height;
+
+        const re = /(\d+)x(\d+)\.(\w+)/;
+        const match = re.exec(row.url);
+        this.ext = match[3];
+        this.url = row.url;
+        this.info = row.copyright;
+    }
+
     exists() {
         return fs.existsSync(this.getFilePath());
     }
 
-    getDiretory() {
+    getDirectory() {
         return getImageDirectory();
     }
 

@@ -43,25 +43,29 @@ class BingStorage extends EventEmitter {
         });
     }
 
-    latest(count) {
+    latest(count, callback) {
         var sql = `SELECT * FROM wallpapers ORDER BY date DESC LIMIT ${count}`;
         this.db.all(sql, (err, rows) => {
             if (err) {
                 log.error(err);
             }
             
-            log.info("got %d images", rows.count);
+            if (callback) {
+                callback(rows);
+            }
         });
     }
 
-    random(count) {
+    random(count, callback) {
         var sql = `SELECT * FROM wallpapers ORDER BY random() LIMIT ${count}`;
         this.db.all(sql, (err, rows) => {
             if (err) {
                 log.error(err);
             }
             
-            log.info("got %d images", rows.count);
+            if (callback) {
+                callback(rows);
+            }
         });
     }
 

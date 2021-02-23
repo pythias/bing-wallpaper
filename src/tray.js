@@ -1,10 +1,10 @@
+const EventEmitter = require('events');
 const { Tray, Menu } = require('electron');
 const info = require('../package.json');
 const path = require('path');
 const settings = require('electron-settings');
-const BingLaunch = require('./launch');
 
-class BingTray {
+class BingTray extends EventEmitter {
     init() {
         let icon = path.join(path.dirname(__dirname), './assets/img/wallpaper-tray.png');
         this.tray = new Tray(icon);
@@ -32,20 +32,17 @@ class BingTray {
 
     latestChecked(checked) {
         settings.setSync("menu.latest", checked);
+        this.emit("menu-latest-checked", checked);
     }
 
     showDetailChecked(checked) {
         settings.setSync("menu.detail", checked);
+        this.emit("menu-detail-checked", checked);
     }
 
     autoLaunchChecked(checked) {
         settings.setSync("menu.auto", checked);
-        const autoLauncher = new BingLaunch(this.app);
-        if (checked) {
-            autoLauncher.enable();
-        } else {
-            autoLauncher.disable();
-        }
+        this.emit("menu-auto-checked", checked);
     }
 }
 

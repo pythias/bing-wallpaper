@@ -5,9 +5,11 @@
   "main": "./main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "electron . --debug",
-    "win": "electron-builder --win --x64",
-    "mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=out --icon=build/icon.icns"
+    "pack:osx": "electron-builder --mac",
+    "pack:win32": "electron-builder --win --ia32",
+    "pack:win64": "electron-builder --win --x64",
+    "build": "npm run pack:osx && npm run pack:win32 && npm run pack:win64",
+    "dev": "electron . --debug"
   },
   "repository": {
     "type": "git",
@@ -19,17 +21,13 @@
   ],
   "build": {
     "appId": "com.duo.bing-wallpaper",
+    "copyright": "Copyright © year ${author}",
     "mac": {
-      "target": [
-        "dmg",
-        "zip"
-      ]
+      "target": ["dmg", "zip"]
     },
     "win": {
-      "target": [
-        "nsis",
-        "zip"
-      ]
+      "target": [{"target": "nsis", "arch": ["x64", "ia32"]}, "zip"],
+      "icon": "build/icon-512.ico"
     }
   },
   "author": "pythias@gmail.com",
@@ -39,7 +37,8 @@
   },
   "homepage": "https://github.com/pythias/bing-wallpaper#readme",
   "devDependencies": {
-    "electron": "^11.3.0"
+    "electron": "^11.3.0",
+    "electron-builder": "^22.9.1"
   },
   "dependencies": {
     "auto-launch": "^5.0.5",
