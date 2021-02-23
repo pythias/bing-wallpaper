@@ -4,7 +4,7 @@ const { promisify } = require('util');
 const path = require('path');
 const childProcess = require('child_process');
 const execFile = promisify(childProcess.execFile);
-const binary = path.join(path.dirname(__dirname), 'assets', 'bin', process.platform === 'darwin' ? 'mac' : 'win.exe');
+const binary = path.join(__dirname, 'assets', 'bin', process.platform === 'darwin' ? 'mac' : 'win'); //todo 目前win为64位的
 const fs = require('fs');
 
 module.exports.getWallpaper = async (id) => {
@@ -17,6 +17,7 @@ module.exports.setWallpaper = async (id, imagePath) => {
         return {error: `Wallpaper '${imagePath}' not exists.`};
     }
     
-    const { stdout } = await execFile(binary, ["set", "-i", id, "-p", path.resolve(imagePath)]);
+    const fullPath = path.resolve(imagePath);
+    const { stdout } = await execFile(binary, ["set", `--id=${id}`, `--path=${fullPath}`]);
     return JSON.parse(stdout);
 };

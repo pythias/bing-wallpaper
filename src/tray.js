@@ -6,7 +6,7 @@ const settings = require('electron-settings');
 
 class BingTray extends EventEmitter {
     init() {
-        let icon = path.join(path.dirname(__dirname), './assets/img/wallpaper-tray.png');
+        let icon = path.join(__dirname, './assets/img/wallpaper-tray.png');
         this.tray = new Tray(icon);
 
         const menu_latest = settings.getSync("menu.latest");
