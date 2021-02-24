@@ -7,7 +7,7 @@ const execFile = promisify(childProcess.execFile);
 const binary = path.join(__dirname, 'assets', 'bin', process.platform === 'darwin' ? 'mac' : 'win'); //todo 目前win为64位的
 const fs = require('fs');
 
-module.exports.getWallpaper = async (id) => {
+module.exports.getWallpaper = async () => {
     const { stdout } = await execFile(binary, ["get"]);
     return JSON.parse(stdout);
 };

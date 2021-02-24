@@ -81,6 +81,19 @@ class BingStorage extends EventEmitter {
             }
         });
     }
+
+    byName(date, name, callback) {
+        var sql = `SELECT * FROM wallpapers WHERE date = ? AND name = ?`;
+        this.db.get(sql, [date, name], (err, row) => {
+            if (err) {
+                log.error(err);
+            }
+
+            if (callback) {
+                callback(row);
+            }
+        });
+    }
 }
 
 module.exports = BingStorage;
