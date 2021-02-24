@@ -18,7 +18,7 @@ class BingTray extends EventEmitter {
             { label: '最新', type: 'radio', checked: menu_latest, click: (e) => { this.latestChecked(e.checked);} },
             { label: '随机', type: 'radio', checked: !menu_latest, click: (e) => { this.latestChecked(!e.checked);} },
             { label: '', type: 'separator' },
-            { label: '显示信息', type: 'checkbox', checked: false, click: (e) => { this.showDetailChecked(e.checked); }  },
+            { label: '显示信息', type: 'normal', enabled: false, click: (e) => { this.showDetailTapped(); }  },
             { label: '自动启动', type: 'checkbox', checked: menu_auto, click: (e) => { this.autoLaunchChecked(e.checked); }  },
             { label: '', type: 'separator' },
             { label: '检查更新...', type: 'normal' },
@@ -34,8 +34,8 @@ class BingTray extends EventEmitter {
         this.emit("menu-latest-checked", checked);
     }
 
-    showDetailChecked(checked) {
-        this.emit("menu-detail-checked", checked);
+    showDetailTapped() {
+        this.emit("menu-detail-tapped");
     }
 
     autoLaunchChecked(checked) {

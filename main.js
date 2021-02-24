@@ -15,7 +15,6 @@ let bing = new Bing();
 let tray = new BingTray();
 let storage = new BingStorage();
 let downloadWindow = null;
-let detail = null;
 
 if (isMac()) {
     app.dock.hide();
@@ -23,8 +22,6 @@ if (isMac()) {
 
 app.on('ready', () => {
     downloadWindow = new BrowserWindow({
-        width: 1, 
-        height: 1,
         show: false, 
         webPreferences: {
             contextIsolation: true
@@ -44,12 +41,9 @@ app.on('ready', () => {
             });
         }
     });
-    tray.on("menu-detail-checked", (checked) => {
-        if (checked) {
-            detail.showDetails();
-        } else {
-            detail.hideDetails();
-        }
+    tray.on("menu-detail-tapped", () => {
+        const detail = new Detail(storage);
+        detail.showDetails();
     });
     tray.on("menu-auto-checked", (checked) => {
         const autoLauncher = new BingLaunch();
@@ -61,7 +55,6 @@ app.on('ready', () => {
     });
 
     storage.init();
-    detail = new Detail(storage);
 
     bing.fetch(0);
     bing.on("fetch-completed", fetchCompleted);
@@ -81,18 +74,12 @@ ipcMain.on("detail-open-tapped", (event, name) => {
     console.log(name);
 });
 
-/**
- * 
- * @param {int} id 
- * @param {Wallpaper} wallpaper 
- */
 function setDisplayWallpaper(id, wallpaper) {
     setWallpaper(id, wallpaper.getFilePath()).then((result) => {
         if (result.hasOwnProperty("error")) {
             log.error("wallpaper set fail, error: %s", result.error);
         } else {
             log.info("wallpaper set, id:%d, path:%s", result.id, result.path);
-            detail.updateDetail(id, wallpaper.name);
         }
     }).catch(err => {
         log.error("wallpaper set failed, error:%s", err);

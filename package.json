@@ -23,10 +23,22 @@
     "appId": "com.duo.bing-wallpaper",
     "copyright": "Copyright © year ${author}",
     "mac": {
-      "target": ["dmg", "zip"]
+      "target": [
+        "dmg",
+        "zip"
+      ]
     },
     "win": {
-      "target": [{"target": "nsis", "arch": ["x64", "ia32"]}, "zip"],
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        "zip"
+      ],
       "icon": "build/icon-512.ico"
     }
   },
@@ -42,6 +54,7 @@
   },
   "dependencies": {
     "auto-launch": "^5.0.5",
+    "devtron": "^1.4.0",
     "electron-dl": "^3.1.0",
     "electron-log": "^4.3.2",
     "electron-settings": "^4.0.2",
