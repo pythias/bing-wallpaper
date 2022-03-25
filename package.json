@@ -49,7 +49,7 @@
   },
   "homepage": "https://github.com/pythias/bing-wallpaper#readme",
   "devDependencies": {
-    "electron": "^11.3.0",
+    "electron": "^13.6.6",
     "electron-builder": "^22.9.1"
   },
   "dependencies": {
